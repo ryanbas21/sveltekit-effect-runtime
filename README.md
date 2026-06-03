@@ -7,9 +7,9 @@ It does not replace SvelteKit routing, actions, loads, or remote functions. It g
 ## Install
 
 ```sh
-pnpm add sveltekit-effect-runtime effect@4.0.0-beta.52
+pnpm add sveltekit-effect-runtime effect@4.0.0-beta.76
 # OR
-bun add sveltekit-effect-runtime effect@4.0.0-beta.52
+bun add sveltekit-effect-runtime effect@4.0.0-beta.76
 ```
 
 Effect v4 is required. You also need a compatible `@sveltejs/kit` project.
@@ -124,7 +124,7 @@ class LoadMeta extends Context.Service<
 export const runtime = SvelteKitEffectRuntime.make({
   requestLayer: Layer.effect(RequestMeta)(
     Effect.gen(function* () {
-      const event = yield* CurrentRequestEvent.asEffect();
+      const event = yield* CurrentRequestEvent;
       return {
         path: event.url.pathname,
         requestId: crypto.randomUUID(),
@@ -133,7 +133,7 @@ export const runtime = SvelteKitEffectRuntime.make({
   ),
   loadLayer: Layer.effect(LoadMeta)(
     Effect.gen(function* () {
-      const event = yield* CurrentServerLoadEvent.asEffect();
+      const event = yield* CurrentServerLoadEvent;
       return {
         routeId: event.route.id,
       };
@@ -153,7 +153,7 @@ import { RequestMeta, runtime } from "$lib/server/runtime";
 
 export const GET = runtime.handler(
   Effect.gen(function* () {
-    const request = yield* RequestMeta.asEffect();
+    const request = yield* RequestMeta;
     return Response.json(request);
   }),
 );
@@ -204,7 +204,7 @@ import { LoadMeta, runtime } from "$lib/server/runtime";
 
 export const load = runtime.load(
   Effect.gen(function* () {
-    const loadMeta = yield* LoadMeta.asEffect();
+    const loadMeta = yield* LoadMeta;
     return {
       loadMeta,
     };

@@ -113,8 +113,8 @@ const runtime: RuntimeBridge<AppConfig | DemoStore, RequestMeta, LoadMeta> =
     remote: appServer,
     requestLayer: Layer.effect(RequestMeta)(
       Effect.gen(function* () {
-        const event = yield* CurrentRequestEvent.asEffect();
-        const config = yield* AppConfig.asEffect();
+        const event = yield* CurrentRequestEvent;
+        const config = yield* AppConfig;
         return {
           appName: config.appName,
           requestId: crypto.randomUUID(),
@@ -125,8 +125,8 @@ const runtime: RuntimeBridge<AppConfig | DemoStore, RequestMeta, LoadMeta> =
     ),
     loadLayer: Layer.effect(LoadMeta)(
       Effect.gen(function* () {
-        const event = yield* CurrentServerLoadEvent.asEffect();
-        const config = yield* AppConfig.asEffect();
+        const event = yield* CurrentServerLoadEvent;
+        const config = yield* AppConfig;
         return {
           appName: config.appName,
           routeId: event.route.id,

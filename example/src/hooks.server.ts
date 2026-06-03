@@ -3,7 +3,7 @@ import * as Effect from "effect/Effect";
 
 export const handle = runtime.handle(({ event, resolve }) =>
   Effect.gen(function* () {
-    const request = yield* RequestMeta.asEffect();
+    const request = yield* RequestMeta;
     const response = yield* Effect.promise(() =>
       Promise.resolve(
         resolve(event, {

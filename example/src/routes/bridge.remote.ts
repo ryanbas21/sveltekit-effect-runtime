@@ -15,8 +15,8 @@ type NoteInput = RemoteFormInput & {
 
 const saveNote = (input: NoteInput) =>
   Effect.gen(function* () {
-    const request = yield* RequestMeta.asEffect();
-    const store = yield* DemoStore.asEffect();
+    const request = yield* RequestMeta;
+    const store = yield* DemoStore;
     const message = (input.message ?? "").trim();
 
     if (message.length === 0) {
@@ -35,8 +35,8 @@ const saveNote = (input: NoteInput) =>
 
 export const getRemoteSnapshot = runtime.query(
   Effect.gen(function* () {
-    const request = yield* RequestMeta.asEffect();
-    const store = yield* DemoStore.asEffect();
+    const request = yield* RequestMeta;
+    const store = yield* DemoStore;
     const snapshot = yield* store.snapshot();
     return {
       request,
@@ -47,7 +47,7 @@ export const getRemoteSnapshot = runtime.query(
 
 export const getGreeting = runtime.query(nonEmptyStringSchema, (name) =>
   Effect.gen(function* () {
-    const request = yield* RequestMeta.asEffect();
+    const request = yield* RequestMeta;
     return {
       greeting: `Hello ${name}`,
       requestPath: request.path,
@@ -58,8 +58,8 @@ export const getGreeting = runtime.query(nonEmptyStringSchema, (name) =>
 
 export const incrementRemoteCounter = runtime.command(numberSchema, (amount) =>
   Effect.gen(function* () {
-    const request = yield* RequestMeta.asEffect();
-    const store = yield* DemoStore.asEffect();
+    const request = yield* RequestMeta;
+    const store = yield* DemoStore;
     const counter = yield* store.increment(amount);
     return {
       counter,

@@ -6,8 +6,8 @@ import { DemoStore, LoadMeta, RequestMeta, runtime } from "$lib";
 
 export const load: PageServerLoad = runtime.load(
   Effect.gen(function* () {
-    const loadMeta = yield* LoadMeta.asEffect();
-    const store = yield* DemoStore.asEffect();
+    const loadMeta = yield* LoadMeta;
+    const store = yield* DemoStore;
     const snapshot = yield* store.snapshot();
     return {
       load: loadMeta,
@@ -19,8 +19,8 @@ export const load: PageServerLoad = runtime.load(
 export const actions = runtime.actions({
   remember: Effect.gen(function* () {
     const event = yield* runtime.CurrentRequestEvent;
-    const request = yield* RequestMeta.asEffect();
-    const store = yield* DemoStore.asEffect();
+    const request = yield* RequestMeta;
+    const store = yield* DemoStore;
     const form = yield* Effect.promise<FormData>(() => event.request.formData());
     const rawName = form.get("name");
     const name = typeof rawName === "string" ? rawName.trim() : "";

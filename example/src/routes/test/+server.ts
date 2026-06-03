@@ -12,8 +12,8 @@ import {
 export const GET: RequestHandler = runtime.handler(
   Effect.gen(function* () {
     const event = yield* runtime.CurrentRequestEvent;
-    const request = yield* RequestMeta.asEffect();
-    const store = yield* DemoStore.asEffect();
+    const request = yield* RequestMeta;
+    const store = yield* DemoStore;
     const snapshot = yield* store.snapshot();
 
     if (event.url.searchParams.get("missing") === "true") {
