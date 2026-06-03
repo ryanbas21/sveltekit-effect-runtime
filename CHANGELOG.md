@@ -1,5 +1,11 @@
 # sveltekit-effect-runtime
 
+## 1.3.0
+
+### Minor Changes
+
+- updated peer-dep effect to version 4.0.0-beta.76
+
 ## 1.2.1
 
 ### Patch Changes

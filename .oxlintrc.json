@@ -22,6 +22,7 @@
   "rules": {
     "sort-imports": "off",
     "new-cap": "off",
+    "max-lines": "off",
     "no-ternary": "off",
     "capitalized-comments": "off",
     "func-names": ["warn", "always", { "generators": "never" }],
@@ -95,6 +96,7 @@
       "files": ["**/*.test.ts", "**/*.spec.ts", "**/test/**/*.ts"],
       "rules": {
         "typescript/no-explicit-any": "off",
+        "typescript/consistent-return": "off",
         "no-console": "off"
       }
     }
