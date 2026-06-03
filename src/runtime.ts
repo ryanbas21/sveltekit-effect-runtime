@@ -860,8 +860,8 @@ export const SvelteKitEffectRuntime: SvelteKitEffectRuntimeStatic = {
           return translateExit(exit, { phase: "command", event }, mapError);
         });
       },
-      CurrentRequestEvent: CurrentRequestEvent.asEffect(),
-      CurrentServerLoadEvent: CurrentServerLoadEvent.asEffect(),
+      CurrentRequestEvent,
+      CurrentServerLoadEvent,
     };
   },
 };

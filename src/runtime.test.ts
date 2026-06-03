@@ -115,7 +115,6 @@ const thrown = (f: () => never): unknown => {
   } catch (error) {
     return error;
   }
-  throw new Error("Expected function to throw");
 };
 
 const makeRequestEvent = (path: string): RequestEvent =>
@@ -146,8 +145,8 @@ describe("SvelteKitEffectRuntime", () => {
       layer: Layer.succeed(AppValue)("app-value"),
       requestLayer: Layer.effect(RequestInfo)(
         Effect.gen(function* () {
-          const event = yield* CurrentRequestEvent.asEffect();
-          const app = yield* AppValue.asEffect();
+          const event = yield* CurrentRequestEvent;
+          const app = yield* AppValue;
           return {
             app,
             path: event.url.pathname,
@@ -158,7 +157,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     const GET = runtime.handler(
       Effect.gen(function* () {
-        const info = yield* RequestInfo.asEffect();
+        const info = yield* RequestInfo;
         return Response.json(info);
       }),
     );
@@ -176,8 +175,8 @@ describe("SvelteKitEffectRuntime", () => {
       layer: Layer.succeed(AppValue)("app-value"),
       requestLayer: Layer.effect(RequestInfo)(
         Effect.gen(function* () {
-          const event = yield* CurrentRequestEvent.asEffect();
-          const app = yield* AppValue.asEffect();
+          const event = yield* CurrentRequestEvent;
+          const app = yield* AppValue;
           return {
             app,
             path: event.url.pathname,
@@ -188,7 +187,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     const handle = runtime.handle(({ event, resolve }) =>
       Effect.gen(function* () {
-        const info = yield* RequestInfo.asEffect();
+        const info = yield* RequestInfo;
         const response = yield* Effect.promise(() =>
           Promise.resolve(resolve(event)),
         );
@@ -227,8 +226,8 @@ describe("SvelteKitEffectRuntime", () => {
       layer: Layer.succeed(AppValue)("app-value"),
       requestLayer: () =>
         Effect.gen(function* () {
-          const event = yield* CurrentRequestEvent.asEffect();
-          const app = yield* AppValue.asEffect();
+          const event = yield* CurrentRequestEvent;
+          const app = yield* AppValue;
           return Layer.succeed(RequestInfo)({
             app,
             path: event.url.pathname,
@@ -238,7 +237,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     const GET = runtime.handler(
       Effect.gen(function* () {
-        const info = yield* RequestInfo.asEffect();
+        const info = yield* RequestInfo;
         return Response.json(info);
       }),
     );
@@ -256,8 +255,8 @@ describe("SvelteKitEffectRuntime", () => {
       layer: Layer.succeed(AppValue)("app-value"),
       loadLayer: Layer.effect(LoadInfo)(
         Effect.gen(function* () {
-          const event = yield* CurrentServerLoadEvent.asEffect();
-          const app = yield* AppValue.asEffect();
+          const event = yield* CurrentServerLoadEvent;
+          const app = yield* AppValue;
           return {
             app,
             routeId: event.route.id,
@@ -268,7 +267,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     const load = runtime.load(
       Effect.gen(function* () {
-        const info = yield* LoadInfo.asEffect();
+        const info = yield* LoadInfo;
         return info;
       }),
     );
@@ -291,7 +290,7 @@ describe("SvelteKitEffectRuntime", () => {
       "unchecked",
       (input, invalidField) =>
         Effect.gen(function* () {
-          const current = yield* CurrentRequestEvent.asEffect();
+          const current = yield* CurrentRequestEvent;
           return {
             ok: true as const,
             input,
@@ -336,7 +335,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     const GET = runtime.handler(
       Effect.gen(function* () {
-        const info = yield* RequestInfo.asEffect();
+        const info = yield* RequestInfo;
         return Response.json(info);
       }),
     );
@@ -395,8 +394,8 @@ describe("SvelteKitEffectRuntime", () => {
       remote,
       requestLayer: Layer.effect(RequestInfo)(
         Effect.gen(function* () {
-          const event = yield* CurrentRequestEvent.asEffect();
-          const app = yield* AppValue.asEffect();
+          const event = yield* CurrentRequestEvent;
+          const app = yield* AppValue;
           return {
             app,
             path: event.url.pathname,
@@ -408,7 +407,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     runtime.query(numberSchema, (id) =>
       Effect.gen(function* () {
-        const info = yield* RequestInfo.asEffect();
+        const info = yield* RequestInfo;
         return {
           id,
           info,
@@ -447,7 +446,7 @@ describe("SvelteKitEffectRuntime", () => {
       }),
       remoteLayer: Layer.effect(RemoteInfo)(
         Effect.gen(function* () {
-          const event = yield* CurrentRequestEvent.asEffect();
+          const event = yield* CurrentRequestEvent;
           return {
             source: "remote",
             path: event.url.pathname,
@@ -459,7 +458,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     runtime.query(
       Effect.gen(function* () {
-        return yield* RemoteInfo.asEffect();
+        return yield* RemoteInfo;
       }),
     );
 
@@ -481,7 +480,7 @@ describe("SvelteKitEffectRuntime", () => {
       remote,
       requestLayer: Layer.effect(RequestInfo)(
         Effect.gen(function* () {
-          const event = yield* CurrentRequestEvent.asEffect();
+          const event = yield* CurrentRequestEvent;
           return {
             app: "command",
             path: event.url.pathname,
@@ -493,7 +492,7 @@ describe("SvelteKitEffectRuntime", () => {
 
     runtime.command(numberSchema, (id) =>
       Effect.gen(function* () {
-        const info = yield* RequestInfo.asEffect();
+        const info = yield* RequestInfo;
         return {
           id,
           info,
