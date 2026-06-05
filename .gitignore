@@ -34,6 +34,4 @@ dist/**/*.map
 # Finder (MacOS) folder config
 .DS_Store
 
-bun.lock
-
 .zed
