@@ -1,13 +1,7 @@
 import type { RequestHandler } from "@sveltejs/kit";
-import * as Effect from "effect/Effect";
 
-import {
-  DemoStore,
-  NeedsLogin,
-  NotFound,
-  RequestMeta,
-  runtime,
-} from "$lib";
+import { DemoStore, NeedsLogin, NotFound, RequestMeta, runtime } from "$lib";
+import * as Effect from "effect/Effect";
 
 export const GET: RequestHandler = runtime.handler(
   Effect.gen(function* () {
@@ -19,7 +13,8 @@ export const GET: RequestHandler = runtime.handler(
     if (event.url.searchParams.get("missing") === "true") {
       return yield* Effect.fail(
         new NotFound({
-          message: "The runtime mapError option translated this domain failure.",
+          message:
+            "The runtime mapError option translated this domain failure.",
         }),
       );
     }

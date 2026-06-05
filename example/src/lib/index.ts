@@ -77,7 +77,7 @@ let counter = 0;
 let lastName = "Ada";
 let notes: ReadonlyArray<string> = ["Booted the Effect runtime"];
 
-const AppLayer = Layer.mergeAll(
+const AppLayer: Layer.Layer<AppConfig | DemoStore> = Layer.mergeAll(
   Layer.succeed(AppConfig)({
     appName: "SvelteKit Effect Bridge",
     startedAt: new Date(),
@@ -108,7 +108,14 @@ const AppLayer = Layer.mergeAll(
 );
 
 const runtime: RuntimeBridge<AppConfig | DemoStore, RequestMeta, LoadMeta> =
-  SvelteKitEffectRuntime.make({
+  SvelteKitEffectRuntime.make<
+    AppConfig | DemoStore,
+    never,
+    RequestMeta,
+    never,
+    LoadMeta,
+    never
+  >({
     layer: AppLayer,
     remote: appServer,
     requestLayer: Layer.effect(RequestMeta)(

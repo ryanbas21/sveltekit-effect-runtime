@@ -1,8 +1,8 @@
+import { DemoStore, LoadMeta, RequestMeta, runtime } from "$lib";
 import { fail } from "@sveltejs/kit";
-import type { Actions, PageServerLoad } from "./$types";
 import * as Effect from "effect/Effect";
 
-import { DemoStore, LoadMeta, RequestMeta, runtime } from "$lib";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = runtime.load(
   Effect.gen(function* () {
@@ -21,7 +21,9 @@ export const actions = runtime.actions({
     const event = yield* runtime.CurrentRequestEvent;
     const request = yield* RequestMeta;
     const store = yield* DemoStore;
-    const form = yield* Effect.promise<FormData>(() => event.request.formData());
+    const form = yield* Effect.promise<FormData>(() =>
+      event.request.formData(),
+    );
     const rawName = form.get("name");
     const name = typeof rawName === "string" ? rawName.trim() : "";
 

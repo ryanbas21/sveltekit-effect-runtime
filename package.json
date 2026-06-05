@@ -50,6 +50,9 @@
     "prepack": "bun run build",
     "prepublishOnly": "bun typecheck && bun lint:check && pnpm test && pnpm build"
   },
+  "dependencies": {
+    "@standard-schema/spec": "^1.1.0"
+  },
   "devDependencies": {
     "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.30.0",

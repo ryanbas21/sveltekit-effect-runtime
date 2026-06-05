@@ -1,5 +1,4 @@
 import type { RemoteFormInput } from "@sveltejs/kit";
-import * as Effect from "effect/Effect";
 
 import {
   DemoStore,
@@ -8,6 +7,7 @@ import {
   numberSchema,
   runtime,
 } from "$lib";
+import * as Effect from "effect/Effect";
 
 type NoteInput = RemoteFormInput & {
   readonly message?: string;

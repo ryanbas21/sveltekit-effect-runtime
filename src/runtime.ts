@@ -105,11 +105,11 @@ export interface SvelteKitEffectRuntime<
    * errors; failures from the Effect program still pass through
    * `mapError` and SvelteKit control-flow values are preserved.
    */
-  handle<E>(
+  readonly handle: <E>(
     f: (
       input: EffectHandleInput,
     ) => Effect.Effect<Response, E, RApp | RReq | CurrentRequestEvent>,
-  ): Handle;
+  ) => Handle;
   /**
    * Wraps an Effect that produces a `Response` into a SvelteKit server
    * handler (the export from `+server.ts`).
@@ -120,9 +120,9 @@ export interface SvelteKitEffectRuntime<
    * original meaning; everything else goes through `mapError` and finally
    * becomes a 500 if unhandled.
    */
-  handler<A extends Response, E>(
+  readonly handler: <A extends Response, E>(
     effect: Effect.Effect<A, E, RApp | RReq | CurrentRequestEvent>,
-  ): (event: RequestEvent) => Promise<A>;
+  ) => (event: RequestEvent) => Promise<A>;
   /**
    * Wraps an Effect that returns load data into a SvelteKit `load`
    * function (the export from `+page.server.ts` / `+layout.server.ts`).
@@ -131,9 +131,9 @@ export interface SvelteKitEffectRuntime<
    * plus `CurrentServerLoadEvent`. Redirects and HTTP errors short-circuit
    * the load the way SvelteKit expects; unhandled failures surface as 500s.
    */
-  load<A extends Record<string, unknown>, E>(
+  readonly load: <A extends Record<string, unknown>, E>(
     effect: Effect.Effect<A, E, RLoad | RApp | CurrentServerLoadEvent>,
-  ): (event: ServerLoadEvent) => Promise<A>;
+  ) => (event: ServerLoadEvent) => Promise<A>;
   /**
    * Wraps a record of Effect-based actions into a SvelteKit `actions`
    * export (the second `+page.server.ts` export alongside `load`).
@@ -149,14 +149,14 @@ export interface SvelteKitEffectRuntime<
    * than thrown, so domain code can model invalid form input with
    * `Effect.fail(fail(400, ...))`.
    */
-  actions<
+  readonly actions: <
     T extends Record<
       string,
       Effect.Effect<unknown, unknown, RApp | RReq | CurrentRequestEvent>
     >,
   >(
     effects: T,
-  ): {
+  ) => {
     [K in keyof T]: (
       event: RequestEvent,
     ) => Promise<
@@ -181,15 +181,17 @@ export interface SvelteKitEffectRuntime<
    * Validation issues raised by the schema short-circuit before the
    * effect runs and are surfaced by SvelteKit, not through `mapError`.
    */
-  query<A, E>(
-    effect: Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
-  ): RemoteQueryFunction<void, A>;
-  query<S extends StandardSchemaV1, A, E>(
-    schema: S,
-    f: (
-      input: StandardSchemaV1.InferOutput<S>,
-    ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
-  ): RemoteQueryFunction<StandardSchemaV1.InferInput<S>, A>;
+  readonly query: {
+    <A, E>(
+      effect: Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
+    ): RemoteQueryFunction<void, A>;
+    <S extends StandardSchemaV1, A, E>(
+      schema: S,
+      f: (
+        input: StandardSchemaV1.InferOutput<S>,
+      ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
+    ): RemoteQueryFunction<StandardSchemaV1.InferInput<S>, A>;
+  };
   /**
    * Wraps an Effect into a SvelteKit remote `form` function (the export
    * from `*.remote.ts`).
@@ -205,27 +207,29 @@ export interface SvelteKitEffectRuntime<
    * Redirects and HTTP errors short-circuit normally; unhandled failures
    * surface as 500s after `mapError`.
    */
-  form<A, E>(
-    effect: Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
-  ): RemoteForm<void, A>;
-  form<Input extends RemoteFormInput, A, E>(
-    validate: "unchecked",
-    f: (
-      input: Input,
-      issue: InvalidField<Input>,
-    ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
-  ): RemoteForm<Input, A>;
-  form<
-    S extends StandardSchemaV1<RemoteFormInput, Record<string, unknown>>,
-    A,
-    E,
-  >(
-    schema: S,
-    f: (
-      input: StandardSchemaV1.InferOutput<S>,
-      issue: InvalidField<StandardSchemaV1.InferInput<S>>,
-    ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
-  ): RemoteForm<StandardSchemaV1.InferInput<S>, A>;
+  readonly form: {
+    <A, E>(
+      effect: Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
+    ): RemoteForm<void, A>;
+    <Input extends RemoteFormInput, A, E>(
+      validate: "unchecked",
+      f: (
+        input: Input,
+        issue: InvalidField<Input>,
+      ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
+    ): RemoteForm<Input, A>;
+    <
+      S extends StandardSchemaV1<RemoteFormInput, Record<string, unknown>>,
+      A,
+      E,
+    >(
+      schema: S,
+      f: (
+        input: StandardSchemaV1.InferOutput<S>,
+        issue: InvalidField<StandardSchemaV1.InferInput<S>>,
+      ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
+    ): RemoteForm<StandardSchemaV1.InferInput<S>, A>;
+  };
   /**
    * Wraps an Effect into a SvelteKit remote `command` function (the export
    * from `*.remote.ts`).
@@ -242,12 +246,12 @@ export interface SvelteKitEffectRuntime<
    * and HTTP errors short-circuit normally; unhandled failures surface as
    * 500s after `mapError`.
    */
-  command<S extends StandardSchemaV1, A, E>(
+  readonly command: <S extends StandardSchemaV1, A, E>(
     schema: S,
     f: (
       input: StandardSchemaV1.InferOutput<S>,
     ) => Effect.Effect<A, E, RApp | RRemote | CurrentRequestEvent>,
-  ): RemoteCommand<StandardSchemaV1.InferInput<S>, A>;
+  ) => RemoteCommand<StandardSchemaV1.InferInput<S>, A>;
   /**
    * Access to the current `RequestEvent` from inside a handler effect.
    *
@@ -428,28 +432,30 @@ export type SvelteKitEffectBridgeOptions<
     };
 
 export interface SvelteKitEffectRuntimeStatic {
-  make(): SvelteKitEffectRuntime<never>;
-  make<
-    RApp,
-    EApp,
-    RReq = never,
-    EReq = never,
-    RLoad = never,
-    ELoad = never,
-    RRemote = RReq,
-    ERemote = EReq,
-  >(
-    options: SvelteKitEffectBridgeOptions<
+  readonly make: {
+    (): SvelteKitEffectRuntime<never>;
+    <
       RApp,
       EApp,
-      RReq,
-      EReq,
-      RLoad,
-      ELoad,
-      RRemote,
-      ERemote
-    >,
-  ): SvelteKitEffectRuntime<RApp, RReq, RLoad, RRemote>;
+      RReq = never,
+      EReq = never,
+      RLoad = never,
+      ELoad = never,
+      RRemote = RReq,
+      ERemote = EReq,
+    >(
+      options: SvelteKitEffectBridgeOptions<
+        RApp,
+        EApp,
+        RReq,
+        EReq,
+        RLoad,
+        ELoad,
+        RRemote,
+        ERemote
+      >,
+    ): SvelteKitEffectRuntime<RApp, RReq, RLoad, RRemote>;
+  };
 }
 
 /**

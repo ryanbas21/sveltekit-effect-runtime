@@ -248,6 +248,23 @@ The runtime includes wrappers for SvelteKit remote functions:
 - `runtime.form(...)`
 
 Remote functions depend on SvelteKit's remote-function support and must be enabled in your SvelteKit app.
+
+```js
+// svelte.config.js
+const config = {
+  compilerOptions: {
+    experimental: {
+      async: true,
+    },
+  },
+  kit: {
+    experimental: {
+      remoteFunctions: true,
+    },
+  },
+};
+```
+
 Because `$app/server` is a SvelteKit virtual module, import it in your app and
 pass it to `SvelteKitEffectRuntime.make(...)`:
 
@@ -399,3 +416,5 @@ runtime.CurrentServerLoadEvent;
 - Request, load, and remote layers are invocation-local and should hold request-derived services.
 - Most wrapper inputs are direct `Effect` values; `handle` and schema-backed remote functions use callbacks when SvelteKit needs to pass hook or validated input.
 - Remote functions are still a SvelteKit experimental surface; this library wraps SvelteKit's transport rather than replacing it.
+- `requestLayer`, `loadLayer`, and `remoteLayer` scopes close when the wrapped SvelteKit entry point resolves. Do not keep resources needed by a streaming response body only in an invocation layer unless the stream owns its own resource lifecycle.
+- Effect v4 is currently beta. Its dependency tree can carry stricter Node.js `engines` requirements than SvelteKit itself, so pin and test the exact Effect/SvelteKit/Node combination you deploy.
